@@ -27,20 +27,17 @@ namespace COP4365
             // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
             Application.Run(new Form_entry());
+
         }
 
         static void InitDatabase()
         {
-            //Testing DB
             using var db = new StockContext();
-            #region ADDED_CODE
-            // Note: This sample requires the database to be created before running.
-
             Debug.WriteLine($"Database path: {db.DbPath}.");
 
             // Create
             Debug.WriteLine("POPULATING STOCKFILES");
-            //Use GetFiles("Directory") to get file names (returns string array)                //TODO//
+            //Use GetFiles("Directory") to get file names (returns string array)
             string mypath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);    //Get path to exe location
             if (mypath != null) {
                 mypath += "\\Stock Data";
@@ -88,7 +85,6 @@ namespace COP4365
             
             else { Debug.WriteLine("DIRECTORY DOESN'T EXIST"); return; }
 
-            #endregion
             
         }
     }

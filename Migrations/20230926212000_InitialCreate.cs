@@ -1,4 +1,5 @@
 ﻿using System;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
@@ -48,7 +49,8 @@ namespace COP4365.Migrations
                         name: "FK_Stocks_StockFiles_StockFileGuid",
                         column: x => x.StockFileGuid,
                         principalTable: "StockFiles",
-                        principalColumn: "Guid");
+                        principalColumn: "Guid",
+                        onDelete: ReferentialAction.Cascade) ;
                 });
 
             migrationBuilder.CreateIndex(

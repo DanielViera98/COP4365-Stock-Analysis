@@ -10,7 +10,6 @@ using System.Windows.Forms.Design;
 
 public class StockContext : DbContext
 {
-    public DbSet<StockFile> StockFiles { get; set; }    //Create database set for collection of stock files
     public DbSet<Stock> Stocks { get; set; }
 
     public string DbPath { get; }
@@ -28,29 +27,7 @@ public class StockContext : DbContext
         => options.UseSqlite($"Data Source={DbPath}");
 }
 
-public class StockFile              //Information for each file
-{
-    public StockFile(string path, string filename, string ticker, string period) 
-    {
-        Path = path; Filename = filename; Ticker = ticker; Period = period;
-        _id = Guid.NewGuid();
-    }
-    private Guid _id;    //Filename
-    [Key]
-    public Guid Guid { get; set; }
-    //private string _filename;
-    public string Path { get; set; }
-    public string Filename { get ; set; }
-    public string Ticker { get; set; }      //Name of stock
-    public string Period { get; set; }      //Period of stock
-    
-
-    public List<Stock> Stocks { get; set; } = new();   //List of stocks
-
-                                                                    //TODO: Implement construction of Stockfile to populate contents
-}
-
-public class Stock                                  //Stock class containing all information for stock
+public class Stock                             //Stock class containing all information for stock
 {
 
     //Ignore so that the csvReader does not try and use it as a column to read into
@@ -64,6 +41,5 @@ public class Stock                                  //Stock class containing all
     public double Close { get; set; }                    //Close value for stock (Dollars-Cents)
     //Needs to be 64-bit, numbers get too large for signed 32-bit
     public Int64 Volume { get; set; }                      //Volume value for stock (Int count)
-    public Guid StockFileGuid { get; internal set; }
-    //public StockFile StockFile { get; set; }       //Parent class for stock collection
+    [Ignore] public string StockFilePath { get; set; }
 }

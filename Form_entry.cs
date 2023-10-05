@@ -16,9 +16,9 @@ namespace COP4365
             {
                 Debug.WriteLine("DELETE DB");
 
-                foreach (var item in db.StockFiles)
+                foreach (var item in db.Stocks)
                 {
-                    db.StockFiles.Remove(item);
+                    db.Stocks.Remove(item);
                 }
                 db.SaveChanges();
 
@@ -27,9 +27,9 @@ namespace COP4365
             InitializeComponent();
 
             //Get ticker and period info, set as datasource for comboboxs
-            IList<string> tickers = db.StockFiles.Select(item => item.Ticker).Distinct().ToList();
+            IList<string> tickers = db.Stocks.Select(item => item.Ticker).Distinct().ToList();
             comboBox_ticker.DataSource = tickers;
-            IList<string> periods = db.StockFiles.Select(item => item.Period).Distinct().ToList();
+            IList<string> periods = db.Stocks.Select(item => item.Period).Distinct().ToList();
             comboBox_period.DataSource = periods;
 
         }
@@ -49,21 +49,15 @@ namespace COP4365
             StockContext db = new StockContext();
             Debug.WriteLine("INDEX CHANGE" + comboBox_ticker.Text + " " + comboBox_period.Text);
             //grab the selected file determined by the ticker and period box
-            StockFile file = db.StockFiles
-                .Where(f => (f.Ticker == comboBox_ticker.Text) && (f.Period == comboBox_period.Text))
-                .FirstOrDefault();
             Debug.WriteLine("FILE INFO: " + comboBox_ticker.Text + " " + comboBox_period.Text);
-            if (file != null)
-            {
                 //Grab the stocks which match the file id
-                var stocks = db.Stocks
-                    .Where(stock => stock.StockFileGuid == file.Guid)
-                    .ToList();
-
-                Debug.WriteLine(file.Filename);
+                //var stocks = db.Stocks
+                //    .Where(stock => stock.StockFileGuid == file.Guid)
+                //    .ToList();
 
                 //Get the dates in the file, put them into classes, and bind to a bindinglist for display
-                List<DateTime> times = stocks.Select(s => s.Date).Distinct().ToList();
+                List<DateTime> times = db.Stocks
+                    .Where(s => s.Ticker == comboBox_ticker.Text && s.Period == comboBox_period.Text).Select(s => s.Date).Distinct().ToList();
                 BindingList<File_Dates> Years = new BindingList<File_Dates>();
                 List<int> y = new List<int>(times.Select(s => s.Date.Year).Distinct().ToList()); y.Sort();
                 foreach (var item in y)
@@ -114,11 +108,6 @@ namespace COP4365
                 comboBox_StartDay.DisplayMember = "item";
                 comboBox_StartDay.ValueMember = "item";
                 #endregion
-
-
-            }
-            else
-                MessageBox.Show("ERROR RETRIEVING TIMES");
         }
     }
 }

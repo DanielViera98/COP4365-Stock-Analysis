@@ -51,41 +51,24 @@ namespace COP4365
             if (Directory.Exists(mypath))
             {
                 //Get filenames, populated Stockcontext with stockfiles
-                string[] filenames = Directory.GetFiles(mypath);
+                List<string> filenames = new List<string>(Directory.GetFiles(mypath));
                 foreach (string path in filenames)
                 {
-                    //Get name of file from path, then cut off the file extension
-                    string name = path.Split("\\Stock Data\\").Last();
-                    name = name.Substring(0,name.IndexOf("."));
-
-                    //Create new stockFile and fill out attributes
-                    string[] items = name.Split('-');
-                    StockFile file = new(path, name, items[0], items[1]) {};
-
-                    //Create a reader for the csv, read into records, place recodes into file.
-                    var reader = new StreamReader(file.Path);
+                    Debug.WriteLine(path);
+                    //Create a reader for the csv, read into records, place recores into file.
+                    var reader = new StreamReader(path);
                     var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
                     var records = csv.GetRecords<Stock>();
                     foreach (var item in records)
                     {
-                        file.Stocks.Add(item);
+                        item.StockFilePath = path;
+                        db.Stocks.Add(item);
                     }
-
-                    //Add file to database
-                    db.Add(file);
-                    db.SaveChanges();
-                    
-                    //Debug info
-                    //Debug.WriteLine($"File: {file.Filename}");
                 }
+                db.SaveChanges();                                       //Takes a lot of time, do once after finished rather than inside loop
                 Debug.WriteLine("FINISHED POPULATING STOCKCONTEXT");
-                
-                
-            }
-            
+            }           
             else { Debug.WriteLine("DIRECTORY DOESN'T EXIST"); return; }
-
-            
         }
     }
 }

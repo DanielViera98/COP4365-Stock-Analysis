@@ -55,7 +55,7 @@ namespace COP4365.Migrations
 
                     b.HasIndex("StockFileGuid");
 
-                    b.ToTable("Stocks");
+                    b.ToTable("Stocks", (string)null);
                 });
 
             modelBuilder.Entity("StockFile", b =>
@@ -82,7 +82,7 @@ namespace COP4365.Migrations
 
                     b.HasKey("Guid");
 
-                    b.ToTable("StockFiles");
+                    b.ToTable("StockFiles", (string)null);
                 });
 
             modelBuilder.Entity("Stock", b =>
